@@ -65,54 +65,74 @@ class DockerTaskBaseTest {
         DockerClient client = project.dummyTask.getClient()
         assertThat(client, isA(JavaDockerClient.class))
     }
-    
+
     @Test
     public void getImageTag() {
         def project = createProject()
 
         // Check the default value
-        def imageTag = project.dummyTask.imageTag
-        assertThat(imageTag, 
-            equalToIgnoringCase("${project.name}:${DockerTaskBase.LATEST_VERSION}"))
+        def imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+            equalToIgnoringCase("${project.name}:${DockerTaskBase.LATEST_VERSION}")))
         
         // A project group should be added to the name
         project.group = PROJECT_GROUP
-        imageTag = project.dummyTask.imageTag
-        assertThat(imageTag,
-            equalToIgnoringCase("${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}"))
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+            equalToIgnoringCase("${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}")))
 
         // If we set the registry that takes precedence
         project.group = null
         project.dummyTask.registry = REGISTRY
-        imageTag = project.dummyTask.imageTag
-        assertThat(imageTag,
-            equalToIgnoringCase("${REGISTRY}/${project.name}:${DockerTaskBase.LATEST_VERSION}"))
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+            equalToIgnoringCase("${REGISTRY}/${project.name}:${DockerTaskBase.LATEST_VERSION}")))
 
         // if we set registry and group
         project.group = PROJECT_GROUP
         project.dummyTask.registry = REGISTRY
-        imageTag = project.dummyTask.imageTag
-        assertThat(imageTag,
-                equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}"))
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+                equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}")))
 
         // If the project has a version that should be used
         project.version = PROJECT_VERSION
-        imageTag = project.dummyTask.imageTag
-        assertThat(imageTag,
-            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${PROJECT_VERSION}"))
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${PROJECT_VERSION}")))
         
         // If we set an override version that should be used
 
         project.dummyTask.tagVersion = TAG_VERSION
-        imageTag = project.dummyTask.imageTag
-        assertThat(imageTag,
-            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${TAG_VERSION}"))
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${TAG_VERSION}")))
         
         // Explicitly setting version to latest should use that
         project.dummyTask.setTagVersionToLatest()
-        imageTag = project.dummyTask.imageTag
-        assertThat(imageTag,
-            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}"))
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, contains(
+            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}")))
         
+    }
+
+    @Test
+    public void getMultipleImageTags() {
+        def project = createProject()
+        project.dummyTask.tagVersions = [ TAG_VERSION, DockerTaskBase.LATEST_VERSION ]
+
+        // Only project.name and versions
+        def imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, containsInAnyOrder(
+            equalToIgnoringCase("${project.name}:${TAG_VERSION}"),
+            equalToIgnoringCase("${project.name}:${DockerTaskBase.LATEST_VERSION}")))
+
+        // Set more fields to the project
+        project.dummyTask.registry = REGISTRY
+        project.group = PROJECT_GROUP
+        imageTags = project.dummyTask.imageTags
+        assertThat(imageTags, containsInAnyOrder(
+            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${TAG_VERSION}"),
+            equalToIgnoringCase("${REGISTRY}/${PROJECT_GROUP}/${project.name}:${DockerTaskBase.LATEST_VERSION}")))
     }
 }

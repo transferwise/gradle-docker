@@ -125,6 +125,16 @@ task fooDocker(type: Docker) {
 }
 ```
 
+#### Multiple tags
+
+If the image needs to be tagged with more than one tag version, the `tagVersions`
+property can be used:
+
+```gradle
+    tagVersions = [ project.version, 'latest' ]
+```
+
+
 ### A note about base images ###
 If no base image is configured through the extension or task property a suitable image is chosen based on the project's `targetCompatibility`. A project targeting Java 7 will for instance get a default base image with a Java 7 runtime.
 

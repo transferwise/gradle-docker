@@ -18,18 +18,19 @@ package se.transmode.gradle.plugins.docker.client;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface DockerClient {
     /**
      * Build a Docker image from the contents of the given directory.
      * 
      * @param buildDir the directory from which to build the image
-     * @param tag the tag to apply to the image
+     * @param tags the tags to apply to the image
      * @param pull wether to pull latest image or not, true enables the pull, false disables pull
      * @return the output of the command
      */
-    public String buildImage(File buildDir, String tag, boolean pull);
-    
+    public String buildImage(File buildDir, Set<String> tags, boolean pull);
+
     /**
      * Push the given image to the configured Docker registry.
      * 

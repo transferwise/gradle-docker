@@ -52,7 +52,7 @@ class DockerRunTask extends DockerTaskBase {
     @TaskAction
     public void run() {
         DockerClient client = getClient()
-        client.run(getImageTag(), getContainerName(), getDetached(), getAutoRemove(), getEnv(), 
+        client.run(getImageTags().first(), getContainerName(), getDetached(), getAutoRemove(), getEnv(),
             getPorts(), getVolumes(), getVolumesFrom(), getLinks())
     }
     

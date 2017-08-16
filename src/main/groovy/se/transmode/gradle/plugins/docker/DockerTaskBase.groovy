@@ -33,7 +33,9 @@ abstract class DockerTaskBase extends DefaultTask {
     String applicationName
     // What to tag the created docker image with (default: group/applicationName)
     String tag
-    // Which version to use along with the tag (default: latest)
+    // Which versions to use along with the tag (default: latest)
+    Set<String> tagVersions
+    // Which version to use along with the tag (default: latest).
     String tagVersion
     // Hostname, port of the docker image registry unless Docker index is used
     String registry
@@ -56,18 +58,22 @@ abstract class DockerTaskBase extends DefaultTask {
         applicationName = project.name
     }
 
+    void setTagVersions(Set<String> versions) {
+        tagVersions = versions
+    }
+
     void setTagVersion(String version) {
-        tagVersion = version;
+        tagVersion = version
     }
 
     void setTagVersionToLatest() {
         tagVersion = LATEST_VERSION;
     }
 
-    protected String getImageTag() {
+    protected Set<String> getImageTags() {
         String tag
         tag = this.tag ?: getDefaultImageTag()
-        return appendImageTagVersion(tag)
+        return appendImageTagVersions(tag)
     }
 
     private String getDefaultImageTag() {
@@ -83,13 +89,18 @@ abstract class DockerTaskBase extends DefaultTask {
         return tag
     }
 
-    private String appendImageTagVersion(String tag) {
-        def version = tagVersion ?: project.version
-        if(version == 'unspecified') {
-            version = LATEST_VERSION
+    private Set<String> appendImageTagVersions(String name) {
+        def versions
+        if(tagVersions) {
+            versions = tagVersions
+        } else if(tagVersion) {
+            versions = [ tagVersion ]
+        } else if(project.version != 'unspecified') {
+            versions = [ project.version ]
+        } else {
+            versions = [ LATEST_VERSION ]
         }
-        return "${tag}:${version}"
-
+        return versions.collect { version -> "${name}:${version}".toString() }
     }
 
     protected DockerClient getClient() {
