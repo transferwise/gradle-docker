@@ -15,24 +15,21 @@
  */
 package se.transmode.gradle.plugins.docker.client;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.gradle.api.GradleException;
-import org.gradle.api.logging.Logger;
-import org.gradle.api.logging.Logging;
-
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DefaultDockerClientConfig.Builder;
 import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
 import com.github.dockerjava.core.command.PushImageResultCallback;
 import com.google.common.base.Preconditions;
+
+import org.apache.commons.lang.StringUtils;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class JavaDockerClient implements DockerClient {
 
@@ -45,25 +42,30 @@ public class JavaDockerClient implements DockerClient {
     }
 
     public static JavaDockerClient create(String url, String user, String password, String email) {
-        final DockerClientConfig.DockerClientConfigBuilder configBuilder = DockerClientConfig.createDefaultConfigBuilder();
+        final Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder();
         if (StringUtils.isEmpty(url)) {
             log.info("Connecting to localhost");
         } else {
             log.info("Connecting to {}", url);
-            configBuilder.withUri(url);
+            configBuilder.withRegistryUrl(url);
         }
         if (StringUtils.isNotEmpty(user)) {
-            configBuilder.withUsername(user).withPassword(password).withEmail(email);
+            configBuilder.withRegistryUsername(user)
+                    .withRegistryPassword(password)
+                    .withRegistryEmail(email);
         }
         return new JavaDockerClient(DockerClientBuilder.getInstance(configBuilder).build());
     }
 
     @Override
-    public String buildImage(File buildDir, String tag, boolean pull) {
-        Preconditions.checkNotNull(tag, "Image tag can not be null.");
-        Preconditions.checkArgument(!tag.isEmpty(), "Image tag can not be empty.");
+    public String buildImage(File buildDir, Set<String> tags, boolean pull) {
+        Preconditions.checkNotNull(tags, "Image tags can not be null.");
+        Preconditions.checkArgument(!tags.isEmpty(), "Image tags can not be empty.");
         final BuildImageResultCallback resultCallback = new BuildImageResultCallback();
-        dockerClient.buildImageCmd(buildDir).withTag(tag).withPull(pull).exec(resultCallback);
+        dockerClient.buildImageCmd(buildDir)
+                .withTags(tags)
+                .withPull(pull)
+                .exec(resultCallback);
         return resultCallback.awaitImageId();
     }
 

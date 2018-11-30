@@ -153,14 +153,14 @@ class DockerTask extends DockerTaskBase {
     void build() {
         setupStageDir()
         buildDockerfile().writeToFile(new File(stageDir, 'Dockerfile'))
-        tag = getImageTag()
-        logger.info('Determining image tag: {}', tag)
+        def tags = getImageTags()
+        logger.info('Determining image tags: {}', tags)
 
         if (!dryRun) {
             DockerClient client = getClient()
-            println client.buildImage(stageDir, tag, pull)
+            println client.buildImage(stageDir, tags, pull)
             if (push) {
-                println client.pushImage(tag)
+                tags.forEach { tag -> println client.pushImage(tag) }
             }
         }
 
