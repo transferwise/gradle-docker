@@ -1,3 +1,4 @@
+
 # Gradle Docker Plugin Example
 
 This example is intended as an illustration on how to build runnable docker images with the gradle-docker plugin in conjunction with Gradle Java and Application plugins.
