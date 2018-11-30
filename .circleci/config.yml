@@ -2,7 +2,8 @@ version: 2
 jobs:
   test:
     docker:
-      - image: arti.tw.ee/circle_oracle_jvm8:8u181
+      - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
+        user: circleci
     resource_class: small
     steps:
       - checkout
@@ -26,7 +27,8 @@ jobs:
             - "~/.gradle"
   publish_snapshot:
     docker:
-      - image: arti.tw.ee/circle_oracle_jvm8:8u181
+      - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
+        user: circleci
     resource_class: small
     steps:
       - checkout
@@ -38,7 +40,8 @@ jobs:
           command: ./gradlew --no-daemon --stacktrace --console=plain publish
   release:
     docker:
-    - image: arti.tw.ee/circle_oracle_jvm8:8u181
+      - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
+        user: circleci
     resource_class: small
     steps:
       - checkout
