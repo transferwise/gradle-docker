@@ -2,8 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
-        user: circleci
+      - image: arti.tw.ee/circle_oracle_jvm8:8u181
     resource_class: small
     environment:
       TERM: vt100
@@ -15,9 +14,6 @@ jobs:
           # be produced if you changed something in the build script (likely you changed a dependency)
           keys:
             - gradle-cache-{{ checksum "build.gradle" }}
-      - run:
-          name: Install dependencies
-          command: ./gradlew dependencies testClasses --console=plain
       - run:
           name: Run tests
           command: ./gradlew test --info --console=plain
@@ -32,8 +28,7 @@ jobs:
             - "~/.gradle"
   publish_snapshot:
     docker:
-      - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
-        user: circleci
+      - image: arti.tw.ee/circle_oracle_jvm8:8u181
     resource_class: small
     environment:
       TERM: vt100
@@ -47,8 +42,7 @@ jobs:
           command: ./gradlew publish --console=plain
   release:
     docker:
-      - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
-        user: circleci
+    - image: arti.tw.ee/circle_oracle_jvm8:8u181
     resource_class: small
     environment:
       TERM: vt100
