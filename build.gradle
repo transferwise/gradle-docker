@@ -75,3 +75,11 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardError"
+        showStackTraces = true
+        exceptionFormat = "full"
+    }
+}
