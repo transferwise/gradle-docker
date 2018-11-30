@@ -46,6 +46,7 @@ dependencies {
 
     compile 'com.google.guava:guava:17.0'
     compile 'com.github.docker-java:docker-java:3.0.12'
+    compile 'com.tapstream:rollbar-logback:0.1.3'  
 
     testCompile 'junit:junit-dep:4.11'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
