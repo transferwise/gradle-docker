@@ -4,8 +4,6 @@ jobs:
     docker:
       - image: arti.tw.ee/circle_oracle_jvm8:8u181
     resource_class: small
-    environment:
-      TERM: vt100
     steps:
       - checkout
       - restore_cache:
@@ -30,8 +28,6 @@ jobs:
     docker:
       - image: arti.tw.ee/circle_oracle_jvm8:8u181
     resource_class: small
-    environment:
-      TERM: vt100
     steps:
       - checkout
       - restore_cache:
@@ -44,8 +40,6 @@ jobs:
     docker:
     - image: arti.tw.ee/circle_oracle_jvm8:8u181
     resource_class: small
-    environment:
-      TERM: vt100
     steps:
       - checkout
       - restore_cache:
@@ -60,7 +54,7 @@ jobs:
           command: git config --global user.name "TransferWise CircleCI" && git config --global user.email circle@circle.tw.ee
       - run:
           name: Publish release
-          command: ./gradlew --no-daemon --stacktrace -Prelease.useAutomaticVersion=true --console=plain release
+          command: ./gradlew --no-daemon --stacktrace --console=plain release -Prelease.useAutomaticVersion=true
 
 workflows:
   version: 2
