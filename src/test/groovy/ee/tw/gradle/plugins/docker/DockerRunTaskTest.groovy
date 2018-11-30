@@ -21,13 +21,13 @@ import org.junit.Test
 import org.mockito.ArgumentMatcher
 import ee.tw.gradle.plugins.docker.client.DockerClient;
 import static org.junit.Assert.assertTrue
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.*
 
 class DockerRunTaskTest {
     
     public static class TestDockerRunTask extends DockerRunTask {
         
-        DockerClient mockClient;
+        DockerClient mockClient
         
         TestDockerRunTask() {
             mockClient = mock(DockerClient.class)
@@ -45,7 +45,7 @@ class DockerRunTaskTest {
             
             @Override
             public boolean matches(Object collection) {
-                return (collection != null) && ((Collection) collection).size() == 0;
+                return (collection != null) && ((Collection) collection).size() == 0
             }
     
     }
