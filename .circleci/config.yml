@@ -60,18 +60,13 @@ workflows:
   version: 2
   test_and_publish:
     jobs:
-      - test
       - release:
           context: artifactory-deploy
-          requires:
-            - test
           filters:
             branches:
               only: master
       - publish_snapshot:
           context: artifactory-deploy
-          requires:
-            - test
           filters:
             branches:
               ignore: master
