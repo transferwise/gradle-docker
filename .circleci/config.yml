@@ -16,7 +16,7 @@ jobs:
             - gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Run tests
-          command: ./gradlew clean check --no-daemon --stacktrace --console=plain
+          command: ./gradlew --no-daemon --stacktrace --console=plain clean check
       - store_test_results:
           path: build/test-results/
       - store_artifacts:
@@ -39,7 +39,7 @@ jobs:
             - gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Publish snapshot
-          command: ./gradlew publish --no-daemon --stacktrace --console=plain
+          command: ./gradlew --no-daemon --stacktrace --console=plain publish
   release:
     docker:
     - image: arti.tw.ee/circle_oracle_jvm8:8u181
@@ -60,7 +60,8 @@ jobs:
           command: git config --global user.name "TransferWise CircleCI" && git config --global user.email circle@circle.tw.ee
       - run:
           name: Publish release
-          command: ./gradlew release --no-daemon --stacktrace -Prelease.useAutomaticVersion=true --console=plain
+          command: ./gradlew --no-daemon --stacktrace -Prelease.useAutomaticVersion=true --console=plain release
+
 workflows:
   version: 2
   test_and_publish:
