@@ -69,6 +69,7 @@ release {
     preTagCommitMessage = "[ci skip] pre tag commit: "
     tagCommitMessage = "[ci skip] creating tag: "
     newVersionCommitMessage = "[ci skip] new version commit: "
+    buildTasks = ['build']
 }
 
 artifacts {
