@@ -4,24 +4,16 @@ jobs:
     docker:
       - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
         user: circleci
-    resource_class: small
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
-          # here we restore the .gradle folder, so we don't have to download all the jars again.
-          # the cache key is the checksum of build.gradle, so a new version of the cache will
-          # be produced if you changed something in the build script (likely you changed a dependency)
           keys:
             - gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Run tests
           command: ./gradlew --no-daemon --stacktrace --console=plain clean check
-      - store_test_results:
-          path: build/test-results/
-      - store_artifacts:
-          path: build/test-results/
       - save_cache:
-          # here we save the .gradle folder, so we can reuse it in the later steps and also later builds.
           key: gradle-cache-{{ checksum "build.gradle" }}
           paths:
             - "~/.gradle"
@@ -29,7 +21,7 @@ jobs:
     docker:
       - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
         user: circleci
-    resource_class: small
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -42,7 +34,7 @@ jobs:
     docker:
       - image: docker-local-artifacts.transferwise.com/circle_oracle_jvm8:171
         user: circleci
-    resource_class: small
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -52,16 +44,28 @@ jobs:
           fingerprints:
             - "3d:19:d8:2b:6b:28:47:d9:1c:71:72:ee:be:48:c9:36"
       - run:
-          # this step is required for pushing to git, otherwise git push in the release plugin will fail
           name: Set git config
           command: git config --global user.name "TransferWise CircleCI" && git config --global user.email circle@circle.tw.ee
       - run:
           name: Publish release
-          command: ./gradlew --no-daemon --stacktrace --console=plain release -Prelease.useAutomaticVersion=true
+          command: ./gradlew --no-daemon --stacktrace --console=plain release publish -Prelease.useAutomaticVersion=true
 
 workflows:
   version: 2
-  publish:
+  test:
     jobs:
+      - test:
+          filters:
+            branches:
+              ignore: master
       - publish_snapshot:
           context: artifactory-deploy
+          requires:
+            - test
+  release_and_update_version:
+    jobs:
+      - release:
+          context: artifactory-deploy
+          filters:
+            branches:
+              only: master

@@ -1,8 +1,0 @@
-image: openjdk7
-script:
-  - ./gradlew assemble
-  - ./gradlew check
-notify:
-  email:
-    recipients:
-      - {{notifEmail}}

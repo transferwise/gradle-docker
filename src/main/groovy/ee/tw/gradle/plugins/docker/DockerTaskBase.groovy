@@ -54,11 +54,11 @@ abstract class DockerTaskBase extends DefaultTask {
         applicationName = project.name
     }
 
-    void setTagVersions(Set<String> versions) {
+    public void setTagVersions(Set<String> versions) {
         tagVersions = versions
     }
 
-    void setTagVersion(String version) {
+    public void setTagVersion(String version) {
         tagVersion = version
     }
 
