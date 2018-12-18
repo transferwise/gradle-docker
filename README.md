@@ -1,5 +1,9 @@
 # Gradle Docker plugin
 
+Owned by: **GBP team**
+
+Fork of gradle docker plugin. Added multiple tags feature to docker images
+
 This plugin for [Gradle](http://www.gradle.org/) adds the capability to build and publish [Docker](http://docker.io/) images from the build script. 
 
 See the [change log](CHANGELOG.md) for information about the latest changes.
