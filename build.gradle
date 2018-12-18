@@ -34,13 +34,6 @@ task wrapper(type: Wrapper) {
 
 repositories {
     jcenter()
-    maven {
-        url 'https://artifacts.transferwise.com/artifactory/libs-snapshot'
-    }
-    maven {
-        url 'http://artifacts.transferwise.com/artifactory/libs-release'
-    }
-
 }
 
 ext {
