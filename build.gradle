@@ -72,12 +72,12 @@ task sourcesJar(type: Jar) {
 }
 
 release {
-    failOnUnversionedFiles = true
+    failOnUnversionedFiles = false
     tagPrefix = project.name
     preTagCommitMessage = "[ci skip] pre tag commit: "
     tagCommitMessage = "[ci skip] creating tag: "
     newVersionCommitMessage = "[ci skip] new version commit: "
-    buildTasks = ['build']
+    buildTasks = []
 }
 
 artifacts {
